@@ -1,5 +1,4 @@
-import Versions.Core
-import com.typesafe.sbt.SbtGit.{GitKeys ⇒ git}
+import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
 lazy val theScalaVersion = "2.12.4"
 
@@ -129,7 +128,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := Core.head,
+      version := "1.5.13-SNAPSHOT",
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -142,7 +141,7 @@ lazy val enumeratumPlayJson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := Core.head,
+      version := "1.5.13-SNAPSHOT",
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play-json"       % "2.6.6",
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -155,7 +154,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
-    version := Core.head,
+    version := "1.5.13-SNAPSHOT",
     libraryDependencies ++= Seq(
       "com.typesafe.play"      %% "play"               % "2.6.6",
       "com.beachape"           %% "enumeratum"         % Versions.Core.stable,
@@ -173,7 +172,7 @@ lazy val enumeratumUPickle = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-upickle",
-    version := Core.head,
+    version := "1.5.13-SNAPSHOT",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -226,7 +225,7 @@ lazy val enumeratumArgonaut = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-argonaut",
-    version := Core.head,
+    version := "1.5.13-SNAPSHOT",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {

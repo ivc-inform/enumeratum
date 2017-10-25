@@ -1,4 +1,5 @@
-import com.typesafe.sbt.SbtGit.{GitKeys => git}
+import Versions.Core
+import com.typesafe.sbt.SbtGit.{GitKeys ⇒ git}
 
 lazy val theScalaVersion = "2.12.4"
 
@@ -36,10 +37,17 @@ lazy val root =
       crossVersion := CrossVersion.binary,
       git.gitRemoteRepo := "git@github.com:lloydmeta/enumeratum.git",
       // Do not publish the root project (it just serves as an aggregate)
-      publishArtifact := false,
       publishLocal := {},
       aggregate in publish := false,
-      aggregate in PgpKeys.publishSigned := false
+      aggregate in PgpKeys.publishSigned := false,
+      publishTo := {
+        val corporateRepo = "http://toucan.simplesys.lan/"
+        if (isSnapshot.value)
+          Some("snapshots" at corporateRepo + "artifactory/libs-snapshot-local")
+        else
+          Some("releases" at corporateRepo + "artifactory/libs-release-local")
+      },
+      credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
     )
     .aggregate(baseProjectRefs ++ integrationProjectRefs: _*)
 
@@ -121,7 +129,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.13-SNAPSHOT",
+      version := Core.head,
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -134,7 +142,7 @@ lazy val enumeratumPlayJson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.13-SNAPSHOT",
+      version := Core.head,
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play-json"       % "2.6.6",
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -147,7 +155,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
-    version := "1.5.13-SNAPSHOT",
+    version := Core.head,
     libraryDependencies ++= Seq(
       "com.typesafe.play"      %% "play"               % "2.6.6",
       "com.beachape"           %% "enumeratum"         % Versions.Core.stable,
@@ -165,7 +173,7 @@ lazy val enumeratumUPickle = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-upickle",
-    version := "1.5.13-SNAPSHOT",
+    version := Core.head,
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -218,7 +226,7 @@ lazy val enumeratumArgonaut = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-argonaut",
-    version := "1.5.13-SNAPSHOT",
+    version := Core.head,
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {

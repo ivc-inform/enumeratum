@@ -29,7 +29,8 @@ lazy val integrationProjectRefs = Seq(
 ).map(Project.projectToRef)
 
 lazy val root =
-  Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
+  Project(id = "enumeratum-root", base = file("."))
+    .settings(commonWithPublishSettings: _*)
     .settings(
       name := "enumeratum-root",
       crossVersion := CrossVersion.binary,
@@ -102,9 +103,8 @@ lazy val enumeratumTest = crossProject
 lazy val enumeratumTestJs  = enumeratumTest.js
 lazy val enumeratumTestJvm = enumeratumTest.jvm
 
-lazy val coreJVMTests = Project(id = "coreJVMTests",
-                                base = file("enumeratum-core-jvm-tests"),
-                                settings = commonWithPublishSettings)
+lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-core-jvm-tests"))
+  .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
     name := "coreJVMTests",
@@ -117,9 +117,8 @@ lazy val coreJVMTests = Project(id = "coreJVMTests",
   .dependsOn(coreJVM, macrosJVM)
 
 lazy val enumeratumReactiveMongoBson =
-  Project(id = "enumeratum-reactivemongo-bson",
-          base = file("enumeratum-reactivemongo-bson"),
-          settings = commonWithPublishSettings)
+  Project(id = "enumeratum-reactivemongo-bson", base = file("enumeratum-reactivemongo-bson"))
+    .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
       version := "1.5.13-SNAPSHOT",
@@ -130,23 +129,22 @@ lazy val enumeratumReactiveMongoBson =
       )
     )
 
-lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
-                                      base = file("enumeratum-play-json"),
-                                      settings = commonWithPublishSettings)
-  .settings(testSettings: _*)
-  .settings(
-    version := s"1.5.13-SNAPSHOT",
-    libraryDependencies ++= Seq(
-      "com.typesafe.play" %% "play-json"       % "2.6.6",
-      "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
-      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
-      "org.joda"          % "joda-convert"     % "1.9.2" % Provided
+lazy val enumeratumPlayJson =
+  Project(id = "enumeratum-play-json", base = file("enumeratum-play-json"))
+    .settings(commonWithPublishSettings: _*)
+    .settings(testSettings: _*)
+    .settings(
+      version := "1.5.13-SNAPSHOT",
+      libraryDependencies ++= Seq(
+        "com.typesafe.play" %% "play-json"       % "2.6.6",
+        "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
+        "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
+        "org.joda"          % "joda-convert"     % "1.9.2" % Provided
+      )
     )
-  )
 
-lazy val enumeratumPlay = Project(id = "enumeratum-play",
-                                  base = file("enumeratum-play"),
-                                  settings = commonWithPublishSettings)
+lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"))
+  .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
     version := "1.5.13-SNAPSHOT",
@@ -240,9 +238,8 @@ lazy val enumeratumArgonautJs  = enumeratumArgonaut.js
 lazy val enumeratumArgonautJvm = enumeratumArgonaut.jvm
 
 lazy val enumeratumJson4s =
-  Project(id = "enumeratum-json4s",
-          base = file("enumeratum-json4s"),
-          settings = commonWithPublishSettings)
+  Project(id = "enumeratum-json4s", base = file("enumeratum-json4s"))
+    .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
       version := "1.5.14-SNAPSHOT",
@@ -282,7 +279,7 @@ lazy val ideSettings = Seq(
 
 lazy val compilerSettings = Seq(
   // the name-hashing algorithm for the incremental compiler.
-  incOptions := incOptions.value.withNameHashing(nameHashing = true),
+  //incOptions := incOptions.value.withNameHashing(nameHashing = true), //todo
   wartremoverErrors in (Compile, compile) ++= Warts.unsafe
     .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes,
   scalacOptions in (Compile, compile) ++= {
@@ -333,13 +330,14 @@ val testSettings = {
       )
     },
     doctestTestFramework := DoctestTestFramework.ScalaTest,
-    doctestWithDependencies := false,
+    //doctestWithDependencies := false, //todo
     scalaJSStage in Test := FastOptStage
   )
 }
 
 lazy val benchmarking =
-  Project(id = "benchmarking", base = file("benchmarking"), settings = commonWithPublishSettings)
+  Project(id = "benchmarking", base = file("benchmarking"))
+    .settings(commonWithPublishSettings: _*)
     .settings(
       name := "benchmarking",
       crossVersion := CrossVersion.binary,
@@ -397,19 +395,12 @@ def withCompatUnmanagedSources(jsJvmCrossProject: Boolean,
   *   - publishing 2.10.x, 2.11.x, 2.12.x
   */
 def aggregateProject(id: String, projects: ProjectReference*): Project =
-  Project(id = s"$id-aggregate",
-          base = file(s"./aggregates/$id"),
-          settings = commonWithPublishSettings)
+  Project(id = s"$id-aggregate", base = file(s"./aggregates/$id"))
+    .settings(commonWithPublishSettings: _*)
     .settings(
       crossVersion := CrossVersion.binary,
       // Do not publish the aggregate project (it just serves as an aggregate)
       publishArtifact := false,
-      doctestWithDependencies := {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, 12)) => false
-          case _             => true
-        }
-      },
       publishLocal := {}
     )
     .aggregate(projects: _*)

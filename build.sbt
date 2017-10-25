@@ -332,12 +332,6 @@ val testSettings = {
           .withCross("org.scalacheck", "scalacheck", crossVersion) % scalacheckVersion % Test force ()
       )
     },
-    doctestGenTests := {
-      if (isScalaJSProject.value)
-        Seq.empty
-      else
-        doctestGenTests.value
-    },
     doctestTestFramework := DoctestTestFramework.ScalaTest,
     doctestWithDependencies := false,
     scalaJSStage in Test := FastOptStage

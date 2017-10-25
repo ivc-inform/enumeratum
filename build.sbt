@@ -33,6 +33,7 @@ lazy val root =
     .settings(commonWithPublishSettings: _*)
     .settings(
       name := "enumeratum-root",
+      version := "1.5.13-SNAPSHOT",
       crossVersion := CrossVersion.binary,
       git.gitRemoteRepo := "git@github.com:lloydmeta/enumeratum.git",
       // Do not publish the root project (it just serves as an aggregate)
